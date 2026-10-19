@@ -14,7 +14,7 @@ Site para consultar leilões, sem cadastro, sem banco de dados e sem envio de e-
 - **Detalhe do imóvel** com link direto para a página dele na Caixa (fotos, edital, matrícula e data).
 - **Central de leilões:** bancos, leiloeiras nacionais, veículos, Receita Federal e, para o estado escolhido, pesquisas prontas de Detran, Tribunal de Justiça, Justiça do Trabalho, Junta Comercial, governo e prefeituras.
 - **Favoritos**, salvos só no navegador de cada pessoa.
-- **Atualização automática** todo dia às 05:00 (Brasília).
+- **Atualização em poucos cliques:** você baixa as listas da Caixa e envia para o GitHub, que gera o site sozinho.
 
 ## Limites (para não haver surpresa)
 - A lista da Caixa **não traz data do leilão nem fotos**. Essas informações ficam no link de cada imóvel.
@@ -29,21 +29,19 @@ Abrir o `index.html` direto do celular ou da pasta do computador **não carrega 
 3. Na página do repositório, clique em **Add file → Upload files** e arraste **todo o conteúdo** desta pasta, incluindo a pasta `.github`. Depois clique em **Commit changes**.
    - Se o navegador não enviar a pasta `.github` (ela começa com ponto e fica oculta), crie o arquivo manualmente: **Add file → Create new file**, com o nome `.github/workflows/atualizar.yml`, e cole o conteúdo do arquivo de mesmo nome.
 4. Vá em **Settings → Actions → General → Workflow permissions**, marque **Read and write permissions** e clique em **Save**.
-5. Vá em **Actions → Atualizar leilões → Run workflow**. A primeira execução leva alguns minutos.
+5. Envie as listas da Caixa para a pasta `entrada/` (veja “Como atualizar os dados”).
 6. Vá em **Settings → Pages**. Em *Source*, escolha **Deploy from a branch**, branch **main**, pasta **/ (root)**, e clique em **Save**.
 7. Em 1 ou 2 minutos o site fica em `https://SEU-USUARIO.github.io/leiloes-brasil/`.
 
-A partir daí, a atualização roda sozinha todo dia. Se uma execução falhar por completo, o GitHub avisa por e-mail **você** (o dono do repositório). O site não envia e-mails a ninguém.
+Se uma execução falhar, o GitHub avisa **você** (o dono do repositório) por e-mail. O site não envia e-mails a ninguém.
 
-> O GitHub pausa rotinas agendadas em repositórios sem nenhuma atividade por 60 dias. Se isso acontecer, entre em **Actions** e clique em **Enable workflow**.
+## Como atualizar os dados (a Caixa bloqueia download automático)
+Nos testes, a Caixa entregou o primeiro arquivo e bloqueou os seguintes, tanto pelo GitHub quanto por um computador comum, mesmo com longas pausas. Por isso a atualização funciona assim:
+1. No site, abra **Sobre e fontes** e clique nos estados que quer atualizar. O navegador baixa a lista oficial (`Lista_imoveis_PR.csv` etc.).
+2. No GitHub, abra a pasta **entrada**, clique em **Add file → Upload files**, arraste os arquivos (sem renomear) e clique em **Commit changes**.
+3. A rotina roda sozinha e o site atualiza em 1 a 2 minutos.
 
-## Se a Caixa bloquear o download automático
-Em **Sobre e fontes**, a tabela mostra os estados com erro. Esses estados continuam exibindo os dados da última atualização que deu certo. Para atualizar manualmente:
-1. Baixe o CSV no site da Caixa (venda-imoveis.caixa.gov.br → Download da lista de imóveis), um por estado.
-2. No GitHub, envie os arquivos para a pasta `entrada/`, com o nome original (ex.: `Lista_imoveis_PR.csv`).
-3. Rode **Actions → Atualizar leilões → Run workflow**. O script usa os arquivos da pasta `entrada/` no lugar do download.
-
-Os arquivos em `entrada/` continuam sendo usados até você apagá-los. Apague-os quando o download automático voltar a funcionar.
+Enviar de novo um arquivo com o mesmo nome substitui o anterior. Estados que você não enviar continuam com os últimos dados. A data de cada um aparece em Sobre e fontes.
 
 ## Rodar no seu computador (opcional)
 Requer Node.js 20 ou mais novo.

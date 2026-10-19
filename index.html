@@ -825,6 +825,14 @@ async function telaSobre() {
     ${ind.total ? `<div class="tabela-rolagem"><table class="tabela"><thead><tr><th>Estado</th><th>Imóveis</th><th>Atualizado em</th><th>Situação</th></tr></thead><tbody>
       ${UFS.map((u) => { const v = ind.ufs[u] || {}; return `<tr><td>${u}</td><td>${(v.total || 0).toLocaleString('pt-BR')}</td><td>${dataHoraBR(v.atualizadoEm)}</td><td>${v.erro ? esc(v.erro) : v.atualizadoEm ? 'OK' : '—'}</td></tr>`; }).join('')}
     </tbody></table></div>` : '<p>Ainda não houve atualização.</p>'}
+    <h2>Atualizar os dados (administrador)</h2>
+    <p>A Caixa não permite download automático. Para atualizar:</p>
+    <ol>
+      <li>Clique nos estados abaixo. Cada link baixa a lista oficial do estado pelo seu navegador.</li>
+      <li>No GitHub, abra a pasta <b>entrada</b> do repositório, clique em <b>Add file → Upload files</b>, arraste os arquivos baixados (sem renomear) e clique em <b>Commit changes</b>.</li>
+      <li>Em 1 a 2 minutos o site mostra os dados novos.</li>
+    </ol>
+    <div class="chips">${UFS.map((u) => `<a class="btn-sec" href="https://venda-imoveis.caixa.gov.br/listaweb/Lista_imoveis_${u}.csv" rel="noopener noreferrer">${u}</a>`).join('')}</div>
     <p class="nota">Confira sempre o edital e o anúncio oficial antes de qualquer proposta. As informações podem mudar ou conter erros da própria fonte.</p>
   </article>`;
 }
