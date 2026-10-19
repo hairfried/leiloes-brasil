@@ -1,8 +1,5 @@
 name: Atualizar leilões
 
-# A Caixa bloqueia downloads automáticos. Por isso esta rotina NÃO acessa o site da Caixa:
-# ela roda sozinha quando você envia CSVs novos para a pasta entrada/ (ou pelo botão Run workflow)
-# e transforma esses arquivos nos dados do site.
 on:
   push:
     paths:
