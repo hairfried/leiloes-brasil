@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Leilões Brasil — Todos os leilões. Um só lugar.</title>
+  <meta name="description" content="Consulte imóveis da Caixa à venda em todo o Brasil e acesse os principais portais de leilão.">
+  <meta name="theme-color" content="#12264a">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%2312264a'/><path d='M14 44h24v6H14zM30 14l14 14-5 5-14-14zM24 26l10 10-4 4-10-10z' fill='%23e2b13c'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+  <style>
+:root {
+  --marinho: #12264a;
+  --marinho-fundo: #0b1b36;
+  --marinho-claro: #1d3a6b;
+  --ouro: #e2b13c;
+  --ouro-texto: #8a6510;
+  --papel: #f2f5fa;
+  --branco: #ffffff;
+  --tinta: #1b2433;
+  --suave: #5b6880;
+  --linha: #dde3ee;
+  --perigo: #b3261e;
+  --ok: #1e7b4f;
+  --raio: 10px;
+  --titulo: 'Archivo', 'Arial Narrow', Arial, sans-serif;
+  --texto: 'Atkinson Hyperlegible', 'Segoe UI', Roboto, Arial, sans-serif;
+  --lateral: 248px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; font-family: var(--texto); font-size: 16px; line-height: 1.55; color: var(--tinta); background: var(--papel);
+  display: grid; grid-template-columns: var(--lateral) 1fr; grid-template-rows: auto 1fr auto;
+  grid-template-areas: 'topo topo' 'lateral conteudo' 'lateral rodape'; min-height: 100vh;
+}
+h1, h2, h3 { font-family: var(--titulo); font-stretch: 112%; line-height: 1.15; color: var(--marinho); margin: 0 0 .5em; }
+h1 { font-size: clamp(1.6rem, 3vw, 2.1rem); font-weight: 800; }
+h2 { font-size: 1.25rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+a { color: var(--marinho-claro); }
+:focus-visible { outline: 3px solid var(--ouro); outline-offset: 2px; }
+.sr, .pular:not(:focus) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.pular:focus { position: fixed; top: 8px; left: 8px; z-index: 99; background: var(--ouro); color: var(--marinho); padding: 8px 12px; }
+
+/* topo e lateral */
+.topo { grid-area: topo; background: var(--marinho-fundo); color: var(--branco); display: flex; align-items: center; gap: 12px; padding: 12px 20px; padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
+.marca { text-decoration: none; display: flex; flex-direction: column; }
+.marca-nome { font-family: var(--titulo); font-stretch: 125%; font-weight: 800; font-size: 1.25rem; letter-spacing: .02em; color: var(--ouro); }
+.marca-slogan { color: #c5d0e3; font-size: .82rem; }
+.btn-menu { display: none; background: none; border: 1px solid #3a5482; color: var(--branco); font-size: 1.2rem; border-radius: 8px; width: 42px; height: 42px; cursor: pointer; }
+.lateral { grid-area: lateral; background: var(--marinho); color: var(--branco); padding: 18px 12px; display: flex; flex-direction: column; gap: 18px; }
+.menu { display: flex; flex-direction: column; gap: 2px; }
+.menu a { color: #dfe6f2; text-decoration: none; padding: 9px 12px; border-radius: 8px; }
+.menu a:hover { background: var(--marinho-claro); }
+.menu a.ativo { background: var(--branco); color: var(--marinho); font-weight: 700; box-shadow: inset 4px 0 0 var(--ouro); }
+.menu-admin p { margin: 0 12px 4px; color: var(--ouro); font-size: .85rem; font-weight: 700; }
+.menu-conta { margin-top: auto; display: flex; flex-direction: column; gap: 8px; padding: 12px; border-top: 1px solid #2c4675; font-size: .9rem; color: #c5d0e3; }
+.menu-conta .btn-link { color: var(--ouro); text-align: left; padding: 0; }
+main > section, main > div > section { margin-bottom: 26px; }
+main { grid-area: conteudo; padding: 28px clamp(16px, 3vw, 40px) 48px; min-width: 0; outline: none; }
+.rodape { grid-area: rodape; padding: 18px clamp(16px, 3vw, 40px) calc(18px + env(safe-area-inset-bottom, 0px)); color: var(--suave); font-size: .85rem; border-top: 1px solid var(--linha); }
+.rodape a { margin-right: 16px; }
+
+/* botões e formulários */
+.btn, .btn-sec, .btn-link, .btn-perigo {
+  font: inherit; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 42px;
+  padding: 8px 16px; border-radius: 8px; cursor: pointer; text-decoration: none; border: 1px solid transparent;
+}
+.btn { background: var(--marinho); color: var(--branco); }
+.btn:hover { background: var(--marinho-claro); }
+.btn-ouro { background: var(--ouro); color: var(--marinho-fundo); }
+.btn-ouro:hover { background: #f0c24f; }
+.btn-sec { background: var(--branco); color: var(--marinho); border-color: #b9c4d8; }
+.btn-sec:hover { border-color: var(--marinho); }
+.btn-link { background: none; color: var(--marinho-claro); text-decoration: underline; padding: 8px 4px; }
+.btn-perigo { background: var(--perigo); color: var(--branco); }
+.perigo { color: var(--perigo); }
+button:disabled { opacity: .55; cursor: not-allowed; }
+label { display: flex; flex-direction: column; gap: 4px; font-weight: 700; font-size: .92rem; color: var(--tinta); }
+input, select, textarea { font: inherit; font-weight: 400; padding: 9px 11px; min-height: 42px; border: 1px solid #b9c4d8; border-radius: 8px; background: var(--branco); color: var(--tinta); width: 100%; }
+input:focus, select:focus, textarea:focus { border-color: var(--marinho); outline: 2px solid var(--ouro); outline-offset: 0; }
+label.check { flex-direction: row; align-items: flex-start; gap: 10px; font-weight: 400; margin: 6px 0; }
+label.check input { width: 20px; min-height: 20px; margin-top: 3px; flex: none; }
+small, .nota { color: var(--suave); font-size: .85rem; font-weight: 400; }
+fieldset { border: 0; padding: 0; margin: 0 0 18px; }
+legend { font-family: var(--titulo); font-stretch: 112%; font-weight: 700; color: var(--marinho); margin-bottom: 8px; }
+details summary { cursor: pointer; font-weight: 700; color: var(--marinho); margin-bottom: 12px; }
+.grade2, .grade3 { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 10px; }
+.grade3 { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; }
+.com-botao { display: flex; gap: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chip { flex-direction: row; font-weight: 400; }
+.chip input { position: absolute; opacity: 0; width: 1px; height: 1px; min-height: 0; }
+.chip span { display: inline-block; padding: 6px 12px; border: 1px solid #b9c4d8; border-radius: 999px; background: var(--branco); cursor: pointer; font-size: .9rem; }
+.chip input:checked + span { background: var(--marinho); border-color: var(--marinho); color: var(--branco); }
+.chip input:focus-visible + span { outline: 3px solid var(--ouro); outline-offset: 1px; }
+.chips-uf .chip span { min-width: 46px; text-align: center; }
+.segmentado { display: flex; flex-wrap: wrap; border: 1px solid #b9c4d8; border-radius: 8px; overflow: hidden; margin-bottom: 12px; width: fit-content; max-width: 100%; background: var(--branco); }
+.segmentado label { flex-direction: row; font-weight: 400; }
+.segmentado input { position: absolute; opacity: 0; width: 1px; height: 1px; min-height: 0; }
+.segmentado span { display: block; padding: 8px 14px; cursor: pointer; border-right: 1px solid var(--linha); }
+.segmentado input:checked + span { background: var(--marinho); color: var(--branco); font-weight: 700; }
+.segmentado input:focus-visible + span { outline: 3px solid var(--ouro); outline-offset: -3px; }
+.form-estreito { max-width: 440px; margin: 0 auto; background: var(--branco); padding: 28px; border-radius: var(--raio); border: 1px solid var(--linha); }
+.form-estreito form, .form-largo { display: flex; flex-direction: column; gap: 14px; }
+.form-largo { max-width: 860px; }
+.bloco { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 20px; margin-bottom: 16px; }
+.bloco-perigo { border-color: #e7b7b3; }
+.acoes-fixas { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* início */
+.hero { background: var(--marinho); color: var(--branco); border-radius: 14px; padding: clamp(24px, 5vw, 56px); margin-bottom: 24px; position: relative; overflow: hidden; }
+.hero::after { content: ''; position: absolute; right: -40px; bottom: -40px; width: 220px; height: 220px; border: 18px solid var(--ouro); border-radius: 50%; opacity: .14; }
+.hero h1 { color: var(--branco); font-size: clamp(2rem, 5.5vw, 3.6rem); font-stretch: 125%; letter-spacing: -.01em; margin-bottom: .3em; }
+.hero p { color: #d3dcec; max-width: 56ch; font-size: 1.08rem; margin: 0 0 22px; }
+.busca-rapida { display: grid; grid-template-columns: 2fr 1.4fr 1fr auto; gap: 8px; max-width: 980px; position: relative; z-index: 1; }
+.busca-rapida input, .busca-rapida select { border: 0; }
+.titulo-secao { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 26px 0 12px; }
+.titulo-secao h1, .titulo-secao h2 { margin: 0; }
+.numeros { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 16px 0; }
+.numeros > div, .numeros > a { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 16px; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
+.numeros a { text-decoration: none; color: inherit; }
+.numeros strong { font-family: var(--titulo); font-stretch: 112%; font-size: 1.9rem; color: var(--marinho); line-height: 1.1; }
+.numeros span { color: var(--suave); font-size: .9rem; }
+.barras { display: flex; flex-direction: column; gap: 6px; background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 16px; }
+.barra { display: grid; grid-template-columns: 200px 1fr 80px; align-items: center; gap: 10px; text-decoration: none; color: inherit; font-size: .92rem; }
+.barra i { display: block; height: 12px; background: var(--ouro); border-radius: 0 6px 6px 0; }
+.barra b { text-align: right; font-variant-numeric: tabular-nums; }
+.aviso-fontes { color: var(--suave); font-size: .9rem; max-width: 80ch; margin-top: 28px; }
+
+/* cards de lote */
+.grade-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.card { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); overflow: hidden; display: flex; flex-direction: column; }
+.card.is-demo { border: 2px dashed var(--perigo); }
+.card.is-fora { opacity: .72; }
+.card-foto { position: relative; display: grid; place-items: center; aspect-ratio: 16 / 9; background: linear-gradient(135deg, var(--marinho) 0%, var(--marinho-claro) 100%); text-decoration: none; }
+.card-foto img { width: 100%; height: 100%; object-fit: cover; }
+.sem-foto { font-size: 3rem; filter: grayscale(.2); }
+.tag-uf { position: absolute; left: 0; bottom: 12px; background: var(--ouro); color: var(--marinho-fundo); font-weight: 700; font-size: .85rem; padding: 4px 12px 4px 10px; border-radius: 0 999px 999px 0; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-corpo { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.card h3 a { color: var(--marinho); text-decoration: none; }
+.card h3 a:hover { text-decoration: underline; }
+.card h3 { margin: 0; }
+.selos { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; }
+.selo { font-size: .76rem; padding: 2px 8px; border-radius: 4px; background: var(--papel); color: var(--suave); border: 1px solid var(--linha); }
+.selo-demo { background: var(--perigo); color: var(--branco); border-color: var(--perigo); font-weight: 700; }
+.selo-fora { background: #fff1d6; color: var(--ouro-texto); border-color: #f0d79c; }
+.selo-aviso { background: #fff8e6; color: var(--ouro-texto); border-color: #f0d79c; }
+.lance { border-left: 4px solid var(--ouro); padding: 2px 0 2px 10px; display: flex; flex-direction: column; }
+.lance span { font-size: .8rem; color: var(--suave); }
+.lance strong { font-family: var(--titulo); font-stretch: 112%; font-size: 1.5rem; color: var(--marinho); font-variant-numeric: tabular-nums; }
+.lance em { font-style: normal; font-size: .82rem; color: var(--ok); font-weight: 700; }
+.lance-grande strong { font-size: 2.2rem; }
+.meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 0; font-size: .85rem; }
+.meta dt { color: var(--suave); }
+.meta dd { margin: 0; overflow-wrap: anywhere; }
+.card-acoes { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: auto; }
+
+/* busca */
+.busca { display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start; }
+.busca-filtros { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 18px; position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow: auto; }
+.busca-filtros .titulo-secao { margin-top: 0; }
+.busca-filtros .grade2, .busca-filtros .grade3 { grid-template-columns: 1fr; }
+.busca-filtros .acoes-fixas { position: sticky; bottom: -18px; background: var(--branco); padding: 12px 0 4px; flex-direction: column; }
+.barra-resultados { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.barra-resultados p { margin: 0; font-weight: 700; font-size: 1.05rem; }
+.barra-resultados label { flex-direction: row; align-items: center; gap: 8px; }
+.barra-resultados select { width: auto; }
+.mostrar-filtros { display: none; }
+.resumo-filtro { color: var(--suave); margin: 6px 0 14px; }
+.paginacao { display: flex; gap: 12px; align-items: center; justify-content: center; margin-top: 22px; }
+
+/* detalhe */
+.voltar { display: inline-block; margin-bottom: 14px; }
+.detalhe-topo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 28px; background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 20px; margin-bottom: 18px; }
+.detalhe-foto { border-radius: 8px; background: var(--marinho); min-height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; overflow: hidden; }
+.detalhe-foto img { width: 100%; height: 100%; object-fit: cover; }
+.detalhe-foto .sem-foto { font-size: 4.5rem; }
+.detalhe-foto .nota { color: #c5d0e3; }
+.local-grande { color: var(--suave); margin: 0 0 14px; }
+.detalhe-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.detalhe section { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 20px; margin-bottom: 18px; }
+.tabela-dados { margin: 0; }
+.tabela-dados div { display: grid; grid-template-columns: 190px 1fr; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--papel); }
+.tabela-dados dt { color: var(--suave); }
+.tabela-dados dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.descricao { white-space: pre-line; max-width: 80ch; }
+.historico { padding-left: 18px; }
+
+/* listas, tabelas, avisos */
+.lista-alertas { display: flex; flex-direction: column; gap: 12px; }
+.alerta { background: var(--branco); border: 1px solid var(--linha); border-left: 5px solid var(--ouro); border-radius: var(--raio); padding: 16px 18px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.alerta h2 { margin-bottom: 4px; }
+.alerta p { margin: 0 0 4px; }
+.alerta.is-pausado { border-left-color: #b9c4d8; opacity: .8; }
+.tabela-rolagem { overflow-x: auto; background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); margin-bottom: 18px; }
+.tabela { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.tabela th { text-align: left; background: var(--papel); color: var(--marinho); padding: 10px 12px; white-space: nowrap; }
+.tabela td { padding: 10px 12px; border-top: 1px solid var(--linha); vertical-align: top; }
+.aviso { background: #fff8e6; border: 1px solid #f0d79c; border-radius: 8px; padding: 10px 14px; color: #5a4310; }
+.aviso-forte { background: #fdecea; border-color: #f1b9b4; color: #7a1c15; }
+.erro { color: var(--perigo); }
+.vazio { background: var(--branco); border: 1px dashed #b9c4d8; border-radius: var(--raio); padding: 32px; text-align: center; grid-column: 1 / -1; }
+.vazio p { max-width: 56ch; margin: 0 auto 14px; color: var(--suave); }
+.carregando { color: var(--suave); padding: 24px 0; }
+.texto-legal { max-width: 75ch; background: var(--branco); padding: 28px; border-radius: var(--raio); border: 1px solid var(--linha); }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 100; max-width: min(92vw, 520px); padding: 12px 18px; border-radius: 8px; background: var(--marinho-fundo); color: var(--branco); box-shadow: 0 6px 24px rgba(11, 27, 54, .35); animation: entra .2s ease-out; }
+.toast-erro { background: var(--perigo); }
+@keyframes entra { from { opacity: 0; transform: translate(-50%, 8px); } }
+@media (prefers-reduced-motion: reduce) { .toast { animation: none; } }
+
+/* celular e tablet */
+@media (max-width: 960px) {
+  body { grid-template-columns: 1fr; grid-template-areas: 'topo' 'conteudo' 'rodape'; }
+  .btn-menu { display: inline-block; }
+  .topo { position: sticky; top: 0; z-index: 20; }
+  .lateral { position: fixed; z-index: 30; top: 0; bottom: 0; left: 0; width: min(84vw, 300px); transform: translateX(-100%); transition: transform .2s; padding-top: calc(18px + env(safe-area-inset-top, 0px)); overflow-y: auto; }
+  body.menu-aberto .lateral { transform: none; box-shadow: 0 0 0 100vmax rgba(11, 27, 54, .5); }
+  .busca { grid-template-columns: 1fr; }
+  .busca-filtros { display: none; position: static; max-height: none; }
+  body.filtros-abertos .busca-filtros { display: block; }
+  .mostrar-filtros { display: inline-flex; }
+  .busca-rapida { grid-template-columns: 1fr 1fr; }
+  .busca-rapida input { grid-column: 1 / -1; }
+  .busca-rapida button { grid-column: 1 / -1; }
+  .detalhe-topo, .detalhe-colunas { grid-template-columns: 1fr; }
+  .numeros-6 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  main { padding: 18px 14px 40px; }
+  .grade2, .grade3 { grid-template-columns: 1fr; }
+  .barra { grid-template-columns: 1fr 70px; }
+  .barra i { grid-column: 1 / -1; grid-row: 2; }
+  .tabela-dados div { grid-template-columns: 1fr; gap: 0; }
+  .form-estreito { padding: 20px; }
+  .segmentado { width: 100%; }
+  .segmentado label { flex: 1 1 auto; }
+}
+
+/* versão estática */
+.selo-novo { background: #e6f4ec; color: var(--ok); border-color: #b8dfc8; font-weight: 700; }
+.atalhos { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 26px; }
+.atalho { display: block; background: var(--branco); border: 1px solid var(--linha); border-left: 5px solid var(--ouro); border-radius: var(--raio); padding: 18px 20px; text-decoration: none; color: inherit; }
+.atalho:hover { border-color: var(--marinho); border-left-color: var(--ouro); }
+.atalho p { margin: 0; color: var(--suave); }
+.intro { max-width: 70ch; color: var(--suave); }
+.lista-portais { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px 24px; }
+.lista-portais li { padding-left: 12px; border-left: 3px solid var(--linha); }
+.lista-portais a { color: var(--marinho); }
+.lista-portais .selo { margin-left: 6px; }
+.linha-uf { flex-direction: row; align-items: center; gap: 10px; margin-bottom: 14px; }
+.linha-uf select { width: auto; }
+.busca-filtros > form > label, .busca-filtros fieldset { margin-bottom: 14px; }
+
+</style>
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topo">
+    <button id="abrir-menu" class="btn-menu" aria-label="Abrir menu" aria-controls="menu">☰</button>
+    <a href="#/" class="marca"><span class="marca-nome">LEILÕES BRASIL</span><span class="marca-slogan">Todos os leilões. Um só lugar.</span></a>
+  </header>
+  <aside id="menu" class="lateral">
+    <nav class="menu" aria-label="Principal">
+      <a href="#/">Início</a>
+      <a href="#/buscar">Buscar imóveis</a>
+      <a href="#/central">Central de leilões</a>
+      <a href="#/favoritos">Favoritos</a>
+      <a href="#/sobre">Sobre e fontes</a>
+    </nav>
+  </aside>
+  <main id="conteudo" tabindex="-1"><div class="carregando">Carregando…</div></main>
+  <footer class="rodape">
+    <a href="#/sobre">Sobre e fontes</a> <a href="#/central">Central de leilões</a>
+    <p>Site de consulta. Confira sempre o edital e o anúncio oficial antes de qualquer proposta.</p>
+  </footer>
+<script>
+(() => {
+"use strict";
+// Central de portais. Links diretos só para endereços conhecidos;
+// para o que muda por estado (tribunais, Detrans, juntas), geramos uma pesquisa no Google.
+// Para incluir um portal: acrescente uma linha no grupo certo.
+
+const GRUPOS = [
+  {
+    titulo: 'Bancos — imóveis retomados',
+    itens: [
+      ['Caixa — imóveis à venda', 'https://venda-imoveis.caixa.gov.br', 'Leilões, licitações e venda direta em todo o Brasil. Os imóveis dela já aparecem na busca deste site.'],
+      ['Santander Imóveis', 'https://www.santanderimoveis.com.br', 'Vitrine de imóveis do banco; os leilões costumam ocorrer em leiloeiras parceiras.'],
+      ['Banco do Brasil — imóveis', null, 'Venda e leilão de imóveis do BB.', 'Banco do Brasil imóveis à venda leilão'],
+      ['Itaú — imóveis', null, 'Imóveis retomados do Itaú.', 'Itaú imóveis à venda leilão'],
+      ['Bradesco — imóveis', null, 'Imóveis retomados do Bradesco.', 'Bradesco imóveis à venda leilão'],
+    ],
+  },
+  {
+    titulo: 'Leiloeiras e plataformas nacionais',
+    itens: [
+      ['Superbid', 'https://www.superbid.net', 'Veículos, máquinas, imóveis e bens diversos.'],
+      ['Mega Leilões', 'https://www.megaleiloes.com.br', 'Imóveis, veículos e leilões judiciais.'],
+      ['Portal Zuk', 'https://www.portalzuk.com.br', 'Imóveis judiciais e de bancos.'],
+      ['Biasi Leilões', 'https://www.biasileiloes.com.br', 'Imóveis de bancos e judiciais.'],
+      ['Sold Leilões', 'https://www.sold.com.br', 'Imóveis, veículos e bens corporativos.'],
+      ['Sodré Santoro', 'https://www.sodresantoro.com.br', 'Veículos de bancos e seguradoras, imóveis e máquinas.'],
+      ['Freitas Leiloeiro', 'https://www.freitasleiloeiro.com.br', 'Veículos, imóveis e bens diversos.'],
+      ['Lance Judicial', 'https://www.lancejudicial.com.br', 'Leilões judiciais.'],
+      ['Leilão Imóvel', 'https://www.leilaoimovel.com.br', 'Agregador de imóveis em leilão de várias leiloeiras.'],
+    ],
+  },
+  {
+    titulo: 'Veículos e máquinas',
+    itens: [
+      ['Copart Brasil', 'https://www.copart.com.br', 'Veículos de seguradoras e financeiras.'],
+      ['Sodré Santoro', 'https://www.sodresantoro.com.br', 'Veículos e máquinas.'],
+      ['Superbid', 'https://www.superbid.net', 'Caminhões, máquinas agrícolas e de construção.'],
+    ],
+  },
+  {
+    titulo: 'Governo federal',
+    itens: [
+      ['Receita Federal — Sistema de Leilão Eletrônico', 'https://www25.receita.fazenda.gov.br/sle-sociedade/portal', 'Mercadorias apreendidas: eletrônicos, veículos, máquinas e outros.'],
+      ['Leilões de bens da União', null, 'Imóveis e bens de órgãos federais.', 'leilão de imóveis da União gov.br'],
+    ],
+  },
+];
+
+// Pesquisas por estado (endereços variam de um estado para outro)
+const POR_ESTADO = [
+  ['Detran — leilão de veículos', (uf) => `leilão de veículos Detran ${uf}`],
+  ['Tribunal de Justiça — leilões judiciais', (uf) => `leilões judiciais TJ${uf} alienação judicial`],
+  ['Justiça do Trabalho — leilões', (uf) => `leilão judicial TRT ${uf}`],
+  ['Junta Comercial — lista de leiloeiros oficiais', (uf) => `leiloeiros oficiais junta comercial ${uf}`],
+  ['Governo do estado — leilão de bens', (uf) => `leilão de bens governo do estado ${uf}`],
+  ['Prefeituras — leilão de veículos e bens', (uf) => `leilão prefeitura ${uf} veículos bens inservíveis`],
+];
+
+const pesquisa = (termo) => `https://www.google.com/search?q=${encodeURIComponent(termo)}`;
+
+
+// ------------------------------------------------------------ constantes e utilidades
+const UFS = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO'];
+const REGIOES = { Norte: ['AC', 'AP', 'AM', 'PA', 'RO', 'RR', 'TO'], Nordeste: ['AL', 'BA', 'CE', 'MA', 'PB', 'PE', 'PI', 'RN', 'SE'], 'Centro-Oeste': ['DF', 'GO', 'MT', 'MS'], Sudeste: ['ES', 'MG', 'RJ', 'SP'], Sul: ['PR', 'RS', 'SC'] };
+const CATEGORIAS = { residenciais: 'Casas e apartamentos', comerciais: 'Imóveis comerciais', terrenos: 'Terrenos', rurais: 'Rurais', outros: 'Outros' };
+const ICONE = { residenciais: '🏠', comerciais: '🏢', terrenos: '📐', rurais: '🌾', outros: '📦' };
+const MODALIDADES = { leilao: 'Leilão', licitacao: 'Licitação aberta', online: 'Venda online', direta: 'Venda direta' };
+const RAIOS = [10, 25, 50, 100, 200, 300, 500];
+const POR_PAGINA = 24;
+const NI = 'Não informado';
+
+const $ = (s, r = document) => r.querySelector(s);
+const main = () => $('#conteudo');
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const brl = (v) => (v == null ? NI : Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }));
+const dataBR = (iso) => (iso ? new Date(iso.length === 10 ? iso + 'T12:00:00' : iso).toLocaleDateString('pt-BR') : NI);
+const dataHoraBR = (iso) => (iso ? new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : NI);
+const normalizar = (s) => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const codificar = (o) => encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(o)))));
+const decodificar = (s) => { try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch { return {}; } };
+function toast(msg, tipo = 'ok') {
+  const el = Object.assign(document.createElement('div'), { className: `toast toast-${tipo}`, textContent: msg });
+  el.setAttribute('role', 'status');
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+function distanciaKm(a, b, c, d) {
+  const r = (g) => (g * Math.PI) / 180;
+  const x = Math.sin(r(c - a) / 2) ** 2 + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(r(d - b) / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(x));
+}
+const modalidadeDe = (m) => {
+  const n = normalizar(m);
+  if (n.includes('leilao')) return 'leilao';
+  if (n.includes('licitacao')) return 'licitacao';
+  if (n.includes('direta')) return 'direta';
+  if (n.includes('online')) return 'online';
+  return null;
+};
+
+// ------------------------------------------------------------ dados (arquivos JSON estáticos)
+let indice = null;
+let municipios = null;
+const porUf = new Map();
+
+async function carregarIndice() {
+  if (indice) return indice;
+  try {
+    const r = await fetch('dados/indice.json', { cache: 'no-cache' });
+    indice = r.ok ? await r.json() : { ufs: {}, total: 0, porCategoria: {} };
+  } catch {
+    indice = { ufs: {}, total: 0, porCategoria: {}, semAcesso: true };
+  }
+  return indice;
+}
+async function carregarMunicipios() {
+  if (municipios) return municipios;
+  try {
+    const r = await fetch('dados/municipios.json');
+    municipios = r.ok ? await r.json() : [];
+  } catch { municipios = []; }
+  return municipios;
+}
+async function carregarUf(uf) {
+  if (porUf.has(uf)) return porUf.get(uf);
+  const p = fetch(`dados/${uf}.json`, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((d) => {
+    if (!d) return [];
+    const k = Object.fromEntries(d.campos.map((c, i) => [c, i]));
+    return d.itens.map((r) => ({
+      uf, id: r[k.id], cidade: r[k.cidade], bairro: r[k.bairro], endereco: r[k.endereco], preco: r[k.preco],
+      avaliacao: r[k.avaliacao], desconto: r[k.desconto], tipo: r[k.tipo], categoria: r[k.categoria],
+      modalidade: r[k.modalidade], descricao: r[k.descricao], lat: r[k.lat], lng: r[k.lng], novoEm: r[k.novoEm],
+      link: r[k.link] === 1 ? d.linkPrefixo + r[k.id] : r[k.link],
+      busca: normalizar([r[k.tipo], r[k.cidade], r[k.bairro], r[k.endereco], r[k.descricao]].join(' ')),
+    }));
+  }).catch(() => []);
+  porUf.set(uf, p);
+  return p;
+}
+
+// ------------------------------------------------------------ favoritos (ficam só neste aparelho)
+const FAV = 'leiloesbrasil_favoritos';
+const favoritos = () => new Set(JSON.parse(localStorage.getItem(FAV) || '[]'));
+function alternarFavorito(chave) {
+  const f = favoritos();
+  if (f.has(chave)) f.delete(chave); else f.add(chave);
+  localStorage.setItem(FAV, JSON.stringify([...f]));
+  return f.has(chave);
+}
+
+// ------------------------------------------------------------ roteador
+const rotas = [
+  [/^\/$/, telaInicio], [/^\/buscar$/, telaBuscar], [/^\/imovel\/([A-Z]{2})\/(\d+)$/, telaImovel],
+  [/^\/central$/, telaCentral], [/^\/favoritos$/, telaFavoritos], [/^\/sobre$/, telaSobre],
+];
+function rotear() {
+  const [caminho, qs] = (location.hash.slice(1) || '/').split('?');
+  const params = new URLSearchParams(qs || '');
+  document.body.classList.remove('menu-aberto', 'filtros-abertos');
+  document.querySelectorAll('.menu a').forEach((a) => a.classList.toggle('ativo', a.getAttribute('href') === '#' + caminho));
+  for (const [re, fn] of rotas) {
+    const m = caminho.match(re);
+    if (m) {
+      main().innerHTML = '<div class="carregando">Carregando…</div>';
+      Promise.resolve(fn(params, ...m.slice(1))).catch((e) => {
+        console.error(e);
+        main().innerHTML = `<div class="vazio"><h2>Não foi possível abrir esta página</h2><p>${esc(e.message)}</p></div>`;
+      });
+      window.scrollTo(0, 0);
+      return;
+    }
+  }
+  main().innerHTML = '<div class="vazio"><h2>Página não encontrada</h2><p><a href="#/">Voltar ao início</a></p></div>';
+}
+window.addEventListener('hashchange', rotear);
+$('#abrir-menu').addEventListener('click', () => document.body.classList.toggle('menu-aberto'));
+
+// ------------------------------------------------------------ card
+function card(x) {
+  const chave = `${x.uf}:${x.id}`;
+  const fav = favoritos().has(chave);
+  const novo = x.novoEm && indice?.primeiraCarga && x.novoEm > indice.primeiraCarga;
+  return `
+  <article class="card">
+    <a class="card-foto" href="#/imovel/${x.uf}/${x.id}" aria-label="Ver detalhes">
+      <span class="sem-foto" aria-hidden="true">${ICONE[x.categoria] || '📦'}</span>
+      <span class="tag-uf">${esc(x.cidade)} — ${x.uf}</span>
+    </a>
+    <div class="card-corpo">
+      <div class="selos">
+        ${novo ? `<span class="selo selo-novo">Novo desde ${dataBR(x.novoEm)}</span>` : ''}
+        <span class="selo">${esc(CATEGORIAS[x.categoria])}</span>
+        <span class="selo">${esc(x.modalidade || 'Modalidade não informada')}</span>
+      </div>
+      <h3><a href="#/imovel/${x.uf}/${x.id}">${esc(x.tipo)}${x.bairro ? ' — ' + esc(x.bairro) : ''}</a></h3>
+      <div class="lance"><span>Preço de venda</span><strong>${brl(x.preco)}</strong>
+        ${x.desconto ? `<em>${Math.round(x.desconto)}% abaixo da avaliação (${brl(x.avaliacao)})</em>` : ''}</div>
+      <dl class="meta">
+        <div><dt>Data do leilão</dt><dd>${NI}</dd></div>
+        <div><dt>Fonte</dt><dd>Caixa</dd></div>
+      </dl>
+      <div class="card-acoes">
+        ${x.link ? `<a class="btn" href="${esc(x.link)}" target="_blank" rel="noopener noreferrer">Ver na Caixa</a>` : '<span class="nota">Link não informado</span>'}
+        <button class="btn-sec" data-fav="${chave}" aria-pressed="${fav}">${fav ? '★ Salvo' : '☆ Salvar'}</button>
+      </div>
+    </div>
+  </article>`;
+}
+function ligarFavoritos(raiz, aoMudar) {
+  raiz.querySelectorAll('[data-fav]').forEach((b) => b.addEventListener('click', () => {
+    const on = alternarFavorito(b.dataset.fav);
+    b.textContent = on ? '★ Salvo' : '☆ Salvar';
+    b.setAttribute('aria-pressed', on);
+    toast(on ? 'Salvo nos favoritos deste aparelho.' : 'Removido dos favoritos.');
+    aoMudar?.();
+  }));
+}
+const ABERTO_COMO_ARQUIVO = !/^https?:$/.test(location.protocol);
+function avisoSemDados() {
+  if (ABERTO_COMO_ARQUIVO) {
+    return `<div class="vazio"><h2>Abra pelo endereço do site</h2>
+      <p>Este arquivo foi aberto direto do celular ou do computador. Assim o navegador não deixa carregar a lista de imóveis.
+      Publique no GitHub (README, “Como publicar”) e abra pelo endereço <b>https://SEU-USUARIO.github.io/leiloes-brasil/</b>.
+      A <a href="#/central">Central de leilões</a> já funciona mesmo assim.</p></div>`;
+  }
+  return `<div class="vazio"><h2>Os dados ainda não foram gerados</h2>
+    <p>Rode a atualização uma vez (veja o README, passo 3). Enquanto isso, use a <a href="#/central">Central de leilões</a>.</p></div>`;
+}
+
+// ------------------------------------------------------------ início
+async function telaInicio() {
+  const ind = await carregarIndice();
+  const max = Math.max(1, ...Object.values(ind.porCategoria || {}));
+  const erros = Object.entries(ind.ufs || {}).filter(([, v]) => v.erro);
+  main().innerHTML = `
+  <section class="hero">
+    <h1>Todos os leilões.<br>Um só lugar.</h1>
+    <p>Pesquise os imóveis da Caixa em todo o Brasil e encontre, num só lugar, os portais de bancos, tribunais, Detrans e leiloeiras.</p>
+    <form id="busca-rapida" class="busca-rapida" role="search">
+      <input name="q" placeholder="Ex.: casa, apartamento, Campo Mourão" aria-label="Palavras-chave">
+      <select name="cat" aria-label="Tipo de imóvel"><option value="">Todos os tipos</option>
+        ${Object.entries(CATEGORIAS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select>
+      <select name="uf" aria-label="Estado"><option value="">Brasil inteiro</option>${UFS.map((u) => `<option>${u}</option>`).join('')}</select>
+      <button class="btn btn-ouro">Buscar</button>
+    </form>
+  </section>
+  ${ind.total ? `
+  <div class="numeros">
+    <div><strong>${ind.total.toLocaleString('pt-BR')}</strong><span>imóveis da Caixa à venda</span></div>
+    <div><strong>${Object.values(ind.ufs).reduce((s, v) => s + (v.novosHoje || 0), 0).toLocaleString('pt-BR')}</strong><span>novos na última atualização</span></div>
+    <div><strong>${dataBR(ind.atualizadoEm)}</strong><span>última atualização</span></div>
+  </div>
+  ${erros.length ? `<p class="aviso">Não foi possível atualizar: ${erros.map(([u]) => u).join(', ')}. Esses estados mostram os dados da atualização anterior.</p>` : ''}
+  <div class="barras">${Object.entries(ind.porCategoria).sort((a, b) => b[1] - a[1]).map(([c, n]) => `
+    <a class="barra" href="#/buscar?f=${codificar({ categorias: [c] })}"><span>${CATEGORIAS[c]}</span><i style="width:${Math.max(2, (n / max) * 100)}%"></i><b>${n.toLocaleString('pt-BR')}</b></a>`).join('')}</div>`
+    : avisoSemDados()}
+  <section class="atalhos">
+    <a class="atalho" href="#/central"><h2>Central de leilões</h2><p>Bancos, leiloeiras, Receita Federal, tribunais, Detrans e juntas comerciais do seu estado.</p></a>
+    <a class="atalho" href="#/buscar?f=${codificar({ novosDias: 7 })}"><h2>Novos da semana</h2><p>Imóveis que entraram na lista da Caixa nos últimos 7 dias.</p></a>
+  </section>`;
+  $('#busca-rapida').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    location.hash = '#/buscar?f=' + codificar({ texto: fd.get('q').trim(), categorias: fd.get('cat') ? [fd.get('cat')] : [], ufs: fd.get('uf') ? [fd.get('uf')] : [] });
+  });
+}
+
+// ------------------------------------------------------------ busca
+function chips(nome, opcoes, marcados = []) {
+  return Object.entries(opcoes).map(([v, r]) => `<label class="chip"><input type="checkbox" name="${nome}" value="${v}" ${marcados.includes(v) ? 'checked' : ''}><span>${esc(r)}</span></label>`).join('');
+}
+
+async function telaBuscar(params) {
+  const ind = await carregarIndice();
+  if (!ind.total) { main().innerHTML = avisoSemDados(); return; }
+  const f = params.get('f') ? decodificar(params.get('f')) : {};
+  const ordem = params.get('o') || 'recentes';
+  const pagina = Number(params.get('p') || 0);
+  const raioCustom = f.raioKm && !RAIOS.includes(f.raioKm);
+
+  main().innerHTML = `
+  <div class="busca">
+    <aside class="busca-filtros">
+      <form id="filtros">
+        <div class="titulo-secao"><h1>Filtros</h1><a href="#/buscar">Limpar</a></div>
+        <label>Palavras-chave<input name="texto" value="${esc(f.texto || '')}" placeholder="ex.: 3 qto, garagem, centro"></label>
+        <label>Excluir palavras<input name="excluir" value="${esc(f.excluir || '')}" placeholder="ex.: ocupado"></label>
+        <fieldset><legend>Tipo de imóvel</legend><div class="chips">${chips('categorias', CATEGORIAS, f.categorias)}</div></fieldset>
+        <fieldset><legend>Estados</legend>
+          <p class="nota">Nenhum marcado = Brasil inteiro.</p>
+          <div class="chips">${Object.keys(REGIOES).map((r) => `<button type="button" class="btn-link" data-regiao="${r}">${r}</button>`).join('')}</div>
+          <div class="chips chips-uf">${chips('ufs', Object.fromEntries(UFS.map((u) => [u, u])), f.ufs)}</div>
+        </fieldset>
+        <fieldset><legend>Distância</legend>
+          <div class="grade2">
+            <label>Estado<select name="ufCentro"><option value="">—</option>${UFS.map((u) => `<option ${f.ufCentro === u ? 'selected' : ''}>${u}</option>`).join('')}</select></label>
+            <label>Cidade<input name="cidadeCentro" list="cidades" value="${esc(f.cidadeCentro || '')}" autocomplete="off"></label>
+          </div>
+          <datalist id="cidades"></datalist>
+          <label>Raio<select name="raio"><option value="">Sem limite</option>
+            ${RAIOS.map((r) => `<option value="${r}" ${f.raioKm === r ? 'selected' : ''}>até ${r} km</option>`).join('')}
+            <option value="custom" ${raioCustom ? 'selected' : ''}>Outro valor</option></select></label>
+          <label>Raio personalizado (km)<input name="raioCustom" type="number" min="1" max="4500" value="${raioCustom ? f.raioKm : ''}"></label>
+          <p class="nota">Medido entre os centros das cidades.</p>
+        </fieldset>
+        <fieldset><legend>Preço</legend>
+          <div class="grade2">
+            <label>Mínimo (R$)<input name="precoMin" type="number" min="0" step="1000" value="${f.precoMin ?? ''}"></label>
+            <label>Máximo (R$)<input name="precoMax" type="number" min="0" step="1000" value="${f.precoMax ?? ''}"></label>
+          </div>
+          <label>Desconto mínimo sobre a avaliação (%)<input name="descontoMin" type="number" min="0" max="99" value="${f.descontoMin ?? ''}"></label>
+        </fieldset>
+        <fieldset><legend>Forma de venda</legend><div class="chips">${chips('modalidades', MODALIDADES, f.modalidades)}</div></fieldset>
+        <label>Entraram na lista<select name="novosDias"><option value="">Qualquer data</option>
+          ${[1, 3, 7, 15, 30].map((d) => `<option value="${d}" ${f.novosDias === d ? 'selected' : ''}>nos últimos ${d} dia${d > 1 ? 's' : ''}</option>`).join('')}</select></label>
+        <div class="acoes-fixas"><button class="btn btn-ouro">Aplicar filtros</button></div>
+      </form>
+    </aside>
+    <section class="busca-resultados">
+      <div class="barra-resultados">
+        <p id="contagem" aria-live="polite">Buscando…</p>
+        <label>Ordenar <select id="ordem">
+          <option value="recentes">Mais recentes</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option>
+          <option value="desconto">Maior desconto</option><option value="distancia">Mais perto</option></select></label>
+        <button class="btn-sec mostrar-filtros" id="mostrar-filtros">Filtros</button>
+      </div>
+      <div class="grade-cards" id="resultados"><div class="carregando">Carregando dados…</div></div>
+      <nav class="paginacao" id="paginacao"></nav>
+    </section>
+  </div>`;
+
+  const form = $('#filtros');
+  $('#ordem').value = ordem;
+  const ir = (nf, o, p) => { location.hash = `#/buscar?f=${codificar(nf)}&o=${o}&p=${p}`; };
+  $('#ordem').addEventListener('change', (e) => ir(f, e.target.value, 0));
+  $('#mostrar-filtros').addEventListener('click', () => document.body.classList.toggle('filtros-abertos'));
+  form.querySelectorAll('[data-regiao]').forEach((b) => b.addEventListener('click', () => {
+    const lista = REGIOES[b.dataset.regiao];
+    const caixas = [...form.querySelectorAll('[name=ufs]')].filter((c) => lista.includes(c.value));
+    const marcar = !caixas.every((c) => c.checked);
+    caixas.forEach((c) => { c.checked = marcar; });
+  }));
+  const ufCentro = form.ufCentro;
+  const preencherCidades = async () => {
+    const m = await carregarMunicipios();
+    $('#cidades').innerHTML = m.filter((x) => x[1] === ufCentro.value).map((x) => `<option value="${esc(x[0])}">`).join('');
+  };
+  ufCentro.addEventListener('change', preencherCidades);
+  if (ufCentro.value) preencherCidades();
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const num = (n) => (fd.get(n) === '' ? null : Number(fd.get(n)));
+    const nf = {
+      texto: fd.get('texto').trim(), excluir: fd.get('excluir').trim(), categorias: fd.getAll('categorias'), ufs: fd.getAll('ufs'),
+      modalidades: fd.getAll('modalidades'), precoMin: num('precoMin'), precoMax: num('precoMax'), descontoMin: num('descontoMin'),
+      novosDias: num('novosDias'),
+    };
+    if (nf.precoMin != null && nf.precoMax != null && nf.precoMin > nf.precoMax) return toast('O preço mínimo está maior que o máximo.', 'erro');
+    const raio = fd.get('raio') === 'custom' ? num('raioCustom') : num('raio');
+    const cidade = fd.get('cidadeCentro').trim();
+    if (raio || cidade) {
+      if (!fd.get('ufCentro') || !cidade) return toast('Para buscar por distância, escolha o estado e a cidade.', 'erro');
+      const m = (await carregarMunicipios()).find((x) => x[1] === fd.get('ufCentro') && normalizar(x[0]) === normalizar(cidade));
+      if (!m) return toast(`Não encontramos "${cidade}" em ${fd.get('ufCentro')}. Escolha uma cidade da lista.`, 'erro');
+      Object.assign(nf, { ufCentro: m[1], cidadeCentro: m[0], centro: [m[2], m[3]], raioKm: raio || null });
+    }
+    ir(nf, ordem, 0);
+  });
+
+  // ------- busca nos arquivos
+  let ufs = f.ufs?.length ? f.ufs : UFS;
+  if (f.centro && f.raioKm) {
+    // carrega só os estados que podem ter cidades dentro do raio
+    const m = await carregarMunicipios();
+    const perto = new Set(m.filter((x) => distanciaKm(f.centro[0], f.centro[1], x[2], x[3]) <= f.raioKm).map((x) => x[1]));
+    ufs = ufs.filter((u) => perto.has(u));
+  }
+  let carregados = 0;
+  const cont = $('#contagem');
+  const dados = (await Promise.all(ufs.map((u) => carregarUf(u).then((d) => { cont.textContent = `Carregando estados… ${++carregados} de ${ufs.length}`; return d; })))).flat();
+
+  const texto = normalizar(f.texto).split(' ').filter((p) => p.length > 1);
+  const excluir = normalizar(f.excluir).split(' ').filter((p) => p.length > 1);
+  const limiteNovo = f.novosDias ? new Date(Date.now() - f.novosDias * 864e5).toISOString().slice(0, 10) : null;
+  let lista = dados.filter((x) => {
+    if (f.categorias?.length && !f.categorias.includes(x.categoria)) return false;
+    if (f.modalidades?.length && !f.modalidades.includes(modalidadeDe(x.modalidade))) return false;
+    if (f.precoMin != null && (x.preco == null || x.preco < f.precoMin)) return false;
+    if (f.precoMax != null && (x.preco == null || x.preco > f.precoMax)) return false;
+    if (f.descontoMin && (x.desconto == null || x.desconto < f.descontoMin)) return false;
+    if (limiteNovo && !(x.novoEm >= limiteNovo && x.novoEm > (indice.primeiraCarga || ''))) return false;
+    if (texto.length && !texto.every((p) => x.busca.includes(p))) return false;
+    if (excluir.some((p) => x.busca.includes(p))) return false;
+    if (f.centro) {
+      if (x.lat == null) return !f.raioKm ? true : false;
+      x.dist = distanciaKm(f.centro[0], f.centro[1], x.lat, x.lng);
+      if (f.raioKm && x.dist > f.raioKm) return false;
+    }
+    return true;
+  });
+  const ordenacoes = {
+    recentes: (a, b) => (b.novoEm || '').localeCompare(a.novoEm || ''),
+    menor: (a, b) => (a.preco ?? Infinity) - (b.preco ?? Infinity),
+    maior: (a, b) => (b.preco ?? -1) - (a.preco ?? -1),
+    desconto: (a, b) => (b.desconto ?? -1) - (a.desconto ?? -1),
+    distancia: (a, b) => (a.dist ?? Infinity) - (b.dist ?? Infinity),
+  };
+  lista = lista.sort(ordenacoes[ordem] || ordenacoes.recentes);
+
+  const desc = [];
+  if (f.centro) desc.push(f.raioKm ? `até ${f.raioKm} km de ${f.cidadeCentro}/${f.ufCentro}` : `distância a partir de ${f.cidadeCentro}/${f.ufCentro}`);
+  else desc.push(f.ufs?.length ? f.ufs.join(', ') : 'Brasil inteiro');
+  cont.textContent = `${lista.length.toLocaleString('pt-BR')} imóve${lista.length === 1 ? 'l' : 'is'} — ${desc.join(', ')}`;
+  if (ordem === 'distancia' && !f.centro) cont.textContent += ' (escolha uma cidade em Distância para ordenar por proximidade)';
+
+  const res = $('#resultados');
+  const fatia = lista.slice(pagina * POR_PAGINA, (pagina + 1) * POR_PAGINA);
+  res.innerHTML = fatia.length ? fatia.map((x) => card(x) .replace('<dt>Fonte</dt><dd>Caixa</dd>', x.dist != null ? `<dt>Distância</dt><dd>~${Math.round(x.dist)} km</dd>` : '<dt>Fonte</dt><dd>Caixa</dd>')).join('')
+    : '<div class="vazio"><h2>Nada encontrado com esses filtros</h2><p>Tente aumentar o raio, tirar o limite de preço ou marcar mais tipos de imóvel. Para veículos, máquinas e leilões judiciais, use a <a href="#/central">Central de leilões</a>.</p></div>';
+  ligarFavoritos(res);
+  const paginas = Math.ceil(lista.length / POR_PAGINA);
+  if (paginas > 1) {
+    const pag = $('#paginacao');
+    pag.innerHTML = `<button class="btn-sec" ${pagina === 0 ? 'disabled' : ''} data-p="${pagina - 1}">Anterior</button>
+      <span>Página ${pagina + 1} de ${paginas}</span>
+      <button class="btn-sec" ${pagina + 1 >= paginas ? 'disabled' : ''} data-p="${pagina + 1}">Próxima</button>`;
+    pag.querySelectorAll('[data-p]').forEach((b) => b.addEventListener('click', () => ir(f, ordem, Number(b.dataset.p))));
+  }
+}
+
+// ------------------------------------------------------------ detalhe
+async function telaImovel(_p, uf, id) {
+  await carregarIndice();
+  const x = (await carregarUf(uf)).find((i) => i.id === id);
+  if (!x) {
+    main().innerHTML = '<div class="vazio"><h2>Imóvel não encontrado</h2><p>Ele pode ter saído da lista da Caixa (vendido ou retirado). <a href="#/buscar">Voltar à busca</a></p></div>';
+    return;
+  }
+  const chave = `${uf}:${id}`;
+  const fav = favoritos().has(chave);
+  const linha = (r, v) => `<div><dt>${r}</dt><dd>${v == null || v === '' ? NI : esc(v)}</dd></div>`;
+  main().innerHTML = `
+  <article class="detalhe">
+    <a href="javascript:history.back()" class="voltar">Voltar</a>
+    <div class="detalhe-topo">
+      <div class="detalhe-foto"><span class="sem-foto" aria-hidden="true">${ICONE[x.categoria]}</span><span class="nota">As fotos ficam no site da Caixa</span></div>
+      <div>
+        <p class="selos"><span class="selo">${CATEGORIAS[x.categoria]}</span><span class="selo">${esc(x.modalidade || 'Modalidade não informada')}</span></p>
+        <h1>${esc(x.tipo)} em ${esc(x.cidade)}/${uf}</h1>
+        <p class="local-grande">${esc([x.endereco, x.bairro].filter(Boolean).join(', '))}</p>
+        <div class="lance lance-grande"><span>Preço de venda</span><strong>${brl(x.preco)}</strong>
+          ${x.desconto ? `<em>${Math.round(x.desconto)}% abaixo da avaliação de ${brl(x.avaliacao)}</em>` : ''}</div>
+        <div class="card-acoes">
+          ${x.link ? `<a class="btn btn-ouro" href="${esc(x.link)}" target="_blank" rel="noopener noreferrer">Ver fotos, edital e matrícula na Caixa</a>` : ''}
+          <button class="btn-sec" data-fav="${chave}" aria-pressed="${fav}">${fav ? '★ Salvo' : '☆ Salvar'}</button>
+        </div>
+      </div>
+    </div>
+    <div class="detalhe-colunas">
+      <section><h2>Dados da venda</h2><dl class="tabela-dados">
+        ${linha('Forma de venda', x.modalidade)}
+        ${linha('Preço', x.preco != null ? brl(x.preco) : null)}
+        ${linha('Valor de avaliação', x.avaliacao != null ? brl(x.avaliacao) : null)}
+        ${linha('Desconto', x.desconto != null ? `${x.desconto.toLocaleString('pt-BR')}%` : null)}
+        ${linha('Data do leilão', null)}
+        ${linha('Número do imóvel na Caixa', x.id)}
+      </dl></section>
+      <section><h2>Origem da informação</h2><dl class="tabela-dados">
+        ${linha('Fonte', 'Caixa Econômica Federal — lista oficial de imóveis')}
+        ${linha('Na lista desde', x.novoEm && x.novoEm > (indice.primeiraCarga || '') ? dataBR(x.novoEm) : `antes de ${dataBR(indice.primeiraCarga)}`)}
+        ${linha('Lista atualizada em', dataHoraBR(indice.ufs?.[uf]?.atualizadoEm))}
+      </dl></section>
+    </div>
+    ${x.descricao ? `<section><h2>Descrição da Caixa</h2><p class="descricao">${esc(x.descricao)}</p></section>` : ''}
+    <p class="aviso">A data do leilão, as fotos, a situação de ocupação e as condições de pagamento estão no site da Caixa. Leia o edital antes de qualquer proposta.</p>
+  </article>`;
+  ligarFavoritos(main());
+}
+
+// ------------------------------------------------------------ central de leilões
+function telaCentral() {
+  const ufSalva = localStorage.getItem('leiloesbrasil_uf') || 'PR';
+  const linkPortal = ([nome, url, desc, termo]) => `
+    <li><a href="${url || pesquisa(termo)}" target="_blank" rel="noopener noreferrer"><b>${esc(nome)}</b></a>
+      ${url ? '' : '<span class="selo">pesquisa</span>'}<br><span class="nota">${esc(desc)}</span></li>`;
+  main().innerHTML = `
+    <h1>Central de leilões</h1>
+    <p class="intro">Os principais portais de leilão do Brasil num só lugar. Cada link abre o site oficial em outra aba.</p>
+    <section class="bloco">
+      <h2>No seu estado</h2>
+      <label class="linha-uf">Estado <select id="uf-central">${UFS.map((u) => `<option ${u === ufSalva ? 'selected' : ''}>${u}</option>`).join('')}</select></label>
+      <ul class="lista-portais" id="por-estado"></ul>
+      <p class="nota">Os endereços desses órgãos mudam de um estado para outro. Por isso, estes links abrem uma pesquisa pronta.</p>
+    </section>
+    ${GRUPOS.map((g) => `<section class="bloco"><h2>${esc(g.titulo)}</h2><ul class="lista-portais">${g.itens.map(linkPortal).join('')}</ul></section>`).join('')}
+    <p class="aviso">Confira sempre se está no site oficial antes de se cadastrar ou pagar qualquer valor. Golpes com sites falsos de leilão são comuns. Desconfie de preços muito baixos e de pagamento por PIX para pessoa física.</p>`;
+  const sel = $('#uf-central');
+  const montar = () => {
+    localStorage.setItem('leiloesbrasil_uf', sel.value);
+    $('#por-estado').innerHTML = POR_ESTADO.map(([nome, termo]) => linkPortal([`${nome} (${sel.value})`, null, 'Abre uma pesquisa pronta no Google.', termo(sel.value)])).join('');
+  };
+  sel.addEventListener('change', montar);
+  montar();
+}
+
+// ------------------------------------------------------------ favoritos
+async function telaFavoritos() {
+  await carregarIndice();
+  const chaves = [...favoritos()];
+  if (!chaves.length) {
+    main().innerHTML = '<h1>Favoritos</h1><div class="vazio"><p>Toque em “Salvar” num imóvel para guardá-lo aqui. Os favoritos ficam só neste aparelho e navegador.</p><a class="btn btn-ouro" href="#/buscar">Buscar imóveis</a></div>';
+    return;
+  }
+  const itens = await Promise.all(chaves.map(async (c) => {
+    const [uf, id] = c.split(':');
+    return { c, x: (await carregarUf(uf)).find((i) => i.id === id) };
+  }));
+  const sumiram = itens.filter((i) => !i.x);
+  main().innerHTML = `<h1>Favoritos</h1>
+    ${sumiram.length ? `<p class="aviso">${sumiram.length} favorito(s) saíram da lista da Caixa (vendidos ou retirados). <button class="btn-link" id="limpar-sumidos">Remover da lista</button></p>` : ''}
+    <div class="grade-cards">${itens.filter((i) => i.x).map((i) => card(i.x)).join('')}</div>`;
+  ligarFavoritos(main(), () => setTimeout(rotear, 300));
+  $('#limpar-sumidos')?.addEventListener('click', () => {
+    const f = favoritos();
+    sumiram.forEach((i) => f.delete(i.c));
+    localStorage.setItem(FAV, JSON.stringify([...f]));
+    rotear();
+  });
+}
+
+// ------------------------------------------------------------ sobre
+async function telaSobre() {
+  const ind = await carregarIndice();
+  main().innerHTML = `
+  <article class="texto-legal">
+    <h1>Sobre e fontes</h1>
+    <p>O Leilões Brasil é um site de consulta. Não vende, não intermedeia e não participa de nenhum leilão. Não pede cadastro e não guarda dados pessoais. Os favoritos ficam só no seu navegador.</p>
+    <h2>De onde vêm os imóveis</h2>
+    <p>Da lista pública de imóveis à venda da Caixa Econômica Federal, baixada uma vez por dia, um arquivo por estado. A lista traz cidade, endereço, preço, valor de avaliação, desconto, descrição e forma de venda. Ela <b>não</b> traz data do leilão nem fotos; essas informações estão no link de cada imóvel no site da Caixa.</p>
+    <h2>Outros leilões</h2>
+    <p>Veículos, máquinas, leilões judiciais e de órgãos públicos estão em sites que não oferecem uma lista pública para consulta automática. Para esses, use a <a href="#/central">Central de leilões</a>, que leva direto aos portais oficiais.</p>
+    <h2>Última atualização por estado</h2>
+    ${ind.total ? `<div class="tabela-rolagem"><table class="tabela"><thead><tr><th>Estado</th><th>Imóveis</th><th>Atualizado em</th><th>Situação</th></tr></thead><tbody>
+      ${UFS.map((u) => { const v = ind.ufs[u] || {}; return `<tr><td>${u}</td><td>${(v.total || 0).toLocaleString('pt-BR')}</td><td>${dataHoraBR(v.atualizadoEm)}</td><td>${v.erro ? esc(v.erro) : v.atualizadoEm ? 'OK' : '—'}</td></tr>`; }).join('')}
+    </tbody></table></div>` : '<p>Ainda não houve atualização.</p>'}
+    <p class="nota">Confira sempre o edital e o anúncio oficial antes de qualquer proposta. As informações podem mudar ou conter erros da própria fonte.</p>
+  </article>`;
+}
+
+rotear();
+
+})();
+</script>
+</body>
+</html>

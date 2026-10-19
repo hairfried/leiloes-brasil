@@ -1,0 +1,8 @@
+Lista de Imóveis da Caixa;;;;;;;;;;
+Data de geração: 18/10/2026;;;;;;;;;;
+ N° do imóvel;UF;Cidade;Bairro;Endereço;Preço;Valor de avaliação;Desconto;Descrição;Modalidade de venda;Link de acesso
+ 8555512345678 ;PR;CAMPO MOURAO;CENTRO;RUA SAO JOSE, N. 1234;180.000,00;250.000,00;28.00;Casa, 0.00 de área total, 120.00 de área privativa, 300.00 de área do terreno, 3 qto(s), 1 vaga na garagem.;Venda Online;https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnimovel=8555512345678
+8555500000001;PR;MARINGA;ZONA 7;AV BRASIL, N. 50, APTO 301;210.500,00;300.000,00;;Apartamento, 70.00 de área privativa, 2 qto(s).;Leilão SFI - Edital Único;https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnimovel=8555500000001
+8555500000002;PR;GOIOERE;JARDIM;RUA A, LOTE 5;45.000,00;60.000,00;25.00;Terreno, 360.00 de área do terreno.;Licitação Aberta;https://exemplo-malicioso.com/x
+8555500000003;PR;SANTA TEREZA DO OESTE;RURAL;ESTRADA X;1.200.000,00;1.500.000,00;20.00;Imóvel Rural, 24 alqueires.;Venda Direta Online;
+;PR;LINHA SEM ID;;;1,00;;;;;
