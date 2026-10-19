@@ -1,8 +1,12 @@
 name: Atualizar leilões
 
+# A Caixa bloqueia downloads automáticos. Por isso esta rotina NÃO acessa o site da Caixa:
+# ela roda sozinha quando você envia CSVs novos para a pasta entrada/ (ou pelo botão Run workflow)
+# e transforma esses arquivos nos dados do site.
 on:
-  schedule:
-    - cron: '0 8 * * *'
+  push:
+    paths:
+      - 'entrada/**'
   workflow_dispatch:
 
 permissions:
@@ -15,7 +19,7 @@ concurrency:
 jobs:
   atualizar:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,12 +27,13 @@ jobs:
           node-version: 20
       - name: Testes
         run: node --test test/*.mjs
-      - name: Baixar listas e gerar dados
-        run: node scripts/atualizar.mjs
+      - name: Gerar dados a partir dos CSVs enviados
+        run: node scripts/atualizar.mjs --somente-entrada
       - name: Publicar dados atualizados
         run: |
           git config user.name "atualizador-leiloes"
           git config user.email "actions@users.noreply.github.com"
+          git pull --rebase
           git add dados
           if git diff --cached --quiet; then
             echo "Nada mudou."
